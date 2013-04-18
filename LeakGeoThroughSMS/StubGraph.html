@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+	<title>LeakGeoThroughSMS Tainted Flows Analysis Graph</title>
+	<script type="text/javascript" src="d3.v2.js"></script>
+	<link type="text/css" rel="stylesheet" href="cluster.css"/>
+</head>
+<body>
+	<h2><u>LeakGeoThroughSMS Tainted Flows Analysis Graph</u></h2>
+	<div id="chart"></div>
+	<script type="text/javascript">
+	var width = 500, 
+		 height = 500,
+		 textHeight = 12;
+
+	var cluster = d3.layout.cluster() 
+		.size([height, width - 200]);
+
+	var diagonal = d3.svg.diagonal()
+		.projection(function(d) { return [d.y, d.x]; }); 
+
+	var vis = d3.select("#chart").append("svg") 
+		.attr("height", height) 
+		.append("g") 
+		.attr("transform", "translate(100, 0)"); 
+
+	//uses d3.json to read flare.json file
+	//extracts node information from .json file
+	d3.json("StubGraph.json", function(json) { 
+		var root = json,
+			nodes = cluster.nodes(json); 
+			
+		nodes.forEach(function(d, i) { d.x = i * textHeight + 60; });
+		
+		var link = vis.selectAll("path.link")
+			.data(cluster.links(nodes)) 
+			.enter().append("path")
+			.attr("class", function(d) { return d.target.type; })
+			.attr("d", diagonal);
+			
+		var node = vis.selectAll("g.node") 
+			.data(nodes) 
+			.enter().append("g") 
+			.attr("class", "node") 
+			.attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
+			.append("a")
+			.attr("xlink:href", function(d) { return d.url + ""; });
+			
+			
+		var myCircles = node.append("circle") 
+			.attr("r", 5)
+			.attr("fill", function(root) { var color
+				if (root.type == "stub") { color = "red"} 
+				else { if (root.type == "sink"){ color = "green"} 
+				else { color ="#CCCCCC" } } return color; });
+			
+		var myTexts = node.append("text")
+			.attr("dx", function(d) { return d.children ? -8 : 8; })
+			.attr("dy", 3) 
+			.attr("fill", function(root) { var color
+				if (root.type == "stub") { color = "red" } 
+				else { if (root.type == "sink"){ color = "green"} else { color ="black"} }
+				return color; })
+			.attr("text-anchor", function(d) { return d.children ? "end" : "start"; })
+			.text(function(root) { return root.name; });
+	}); //end of extracting json information
+	</script>
+</body>
+</html>

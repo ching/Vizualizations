@@ -1,0 +1,42 @@
+body {
+	background-color: white;
+	font-family: Tahoma;
+	margin: auto;
+	text-align: center;
+	
+}
+.node circle {
+  cursor: pointer;
+  stroke: black;
+  stroke-width: 3px;
+}
+
+.node {
+  font: 12px sans-serif;
+  font-weight: bold;
+}
+
+.stub {
+  fill: none;
+  stroke: red;
+  stroke-width: 2px;
+}
+
+.sink {
+  fill: none;
+  stroke: green;
+  stroke-width: 2px;
+}
+
+.source {
+  fill: none;
+  stroke: #CCCCCC;
+  stroke-width: 2px;
+}
+
+.reachable {
+  fill: none;
+  stroke: #CCCCCC;
+  stroke-dasharray: 3,2,1;
+  stroke-width: 2px;
+}
